@@ -1,15 +1,17 @@
+from django.conf import settings
 from django.contrib import admin
-from tomoko.repaint.management.commands.repaint_load import MM_LEVEL
 from tomoko.repaint.models import Point
-from tomoko.repaint.utils import inline_image
+from tomoko.lib.inline import inline
 
 class PointAdmin(admin.ModelAdmin):
-    list_display = ("__unicode__", "visual")
+    list_display = ('__unicode__', 'visual', 'is_basic')
+    list_filter = ('is_basic', )
+    readonly_fields = ('pad_u', 'pad_v')
 
     def visual(self, obj):
-        size = 4 * MM_LEVEL
+        size = 4 * settings.RE_LEVEL
         return ("<img src='data:image/png;base64,%s' width=%d height=%d>" %
-            (inline_image(obj.image(), MM_LEVEL), size, size))
+            (inline(obj.loop(), settings.RE_LEVEL), size, size))
 
     visual.allow_tags = True
 
